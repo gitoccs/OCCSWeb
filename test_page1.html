@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html> 
+<html>
+<head>
+	<title>Page Test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="js/jquery.js"></script>
+    <script>
+	
+	var geturl = "MobileAPI.asmx/GetAllDemand";
+	var para = {keyword: "dhccpass",
+		pageSize:10,
+		pageIndex:0,
+		status:-1,
+		cid:"all"
+	};
+	//var geturl = "page1.xml";
+	//var geturl = "test.php";
+	
+	//var geturl1 = "http://218.61.196.194:9009/MobileAPI.ASMX/AddDemand";
+
+	$(function(){
+		
+		$.ajax({
+		  type:'get',
+		  url: geturl,
+		  cache: false,
+		  success: function(html){
+			alert($(html).text());
+		  },
+		  data:para,
+		  error: function(){
+			  alert("error")
+		  }
+		});
+		
+		/*
+		$.post(geturl1,{keyword:"dhccpass", key:"673d17c8-3175-4b17-b399-02e79ec0fe68", categoryname:"业务需求分析", details:1312, titile: 1111}, function(data){
+			console.log( $(data).html() );
+		});
+		*/
+		
+
+	});
+	
+    </script>
+</head>
+
+<body>
+tttttttt</body>
+</html>

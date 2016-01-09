@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="css/yalecss.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/tools.js"></script>
+    <script>
+
+        var personInfo = {};
+        var infoUrl = "MobileAPI.asmx/GetUserInfo";
+        var infoPara = {
+            keyword: keyword,
+            username: $.urlGet()["name"]
+        };
+
+        var bankCardInfo = {};
+        var bankRecord = 0;
+        var bankCardUrl = "MobileAPI.asmx/GetBankCard";
+        var bankCardPara = {
+            keyword: keyword,
+            key: $.urlGet()["key"],
+            pageIndex: 0,
+            pageSize: 10
+        };
+
+        var cashRecord = {};
+        var cashRecordCount = 0;
+        var cashRecordUrl = "MobileAPI.asmx/GetCashRecord";
+        var cashRecordPara = {
+            keyword: keyword,
+            key: $.urlGet()["key"],
+            pageIndex: 0,
+            pageSize: 10,
+            state: 0,
+            mb: 0,
+            ma: 1000000,
+            dbf: '2012-1-1',
+            da: '2015-10-10',
+            sr: "",
+            zc: "",
+            Cz: "",
+            tx: "",
+            qt: "",
+            kw: ""
+        };
+
+        var ocoinRecord = {};
+        var ocoinRecordCount = 0;
+        var ocoinRecordUrl = "MobileAPI.asmx/GetOcoinRecord";
+        var ocoinRecordPara = {
+            keyword: keyword,
+            key: $.urlGet()["key"],
+            pageIndex: 0,
+            pageSize: 10,
+            mb: 0,
+            ma: 1000000,
+            dbf: '2012-1-1',
+            da: '2015-10-10'
+        };
+
+        $(function () {
+            $.loadXML(infoUrl, infoPara, "post", function (xml) {
+                var obj = $(xml).toObject().get(0);
+                personInfo = obj.results.details;
+                $('p.accountMoney').html('<span class="inner_title">账户金额：</span>' + personInfo.amount + "元");
+                $('p.ocoin').html('<span class="inner_title">O币数量：</span>' + personInfo.ocoin + "枚");
+                $.loadXML(cashRecordUrl, cashRecordPara, "post", function (xml) {
+                    var obj = $(xml).toObject().get(0);
+                    cashRecord = obj.results.rowlist.row;
+                    putCashTable();
+                });
+
+                $.loadXML(ocoinRecordUrl, ocoinRecordPara, "post", function (xml) {
+                    var obj = $(xml).toObject().get(0);
+                    ocoinRecord = obj.results.rowlist.row;
+                    putOcoinTable();
+                });
+            });
+
+            $.loadXML(bankCardUrl, bankCardPara, "post", function (xml) {
+                var obj = $(xml).toObject().get(0);
+                var results = obj.root.results;
+                if (results) {
+                    $('p.bankCard').html('<span class="inner_title">银行卡：</span>' + obj.root.totalRecord + "张");
+                    bankRecord = obj.root.results.row;
+                    putBankTable();
+                } else {
+                    $('p.bankCard').html('<span class="inner_title">银行卡：</span>' + "您尚无绑定的银行卡");
+                }
+            });
+
+            $(document).on('click', '#cash-more', function () {
+                console.log("cash-more");
+                $('#page1').fadeOut(300);
+            });
+
+            $(document).on('click', '#ocoin-more', function () {
+                console.log("cash-more");
+            });
+
+            $(document).on('click', '#bank-more', function () {
+                console.log("cash-more");
+            });
+
+            $(document).on('click', '#cash-more', function () {
+                console.log("cash-more");
+            });
+        });
+
+        var putCashTable = function () {
+            var tableStr = '<table class="table table-hover" style="margin-bottom: 0">';
+            tableStr += '<thead><tr><th>类型</th><th>金额</th><th>时间</th><th>状态</th></tr></thead><tbody>';
+            var length = cashRecord.length > accountDisplayLength ? accountDisplayLength : cashRecord.length;
+            var showMore = cashRecord.length > accountDisplayLength ? true : false;
+
+            for (var i = 0; i < length; i++) {
+                tableStr += '<tr>';
+                tableStr += '<th>' + cashRecord[i].transaction_Property + '</th>';
+                tableStr += '<th>' + cashRecord[i].transaction_Num + '</th>';
+                tableStr += '<th>' + cashRecord[i].transaction_Time + '</th>';
+                tableStr += '<th>' + cashRecord[i].transaction_Status + '</th>';
+                tableStr += '</tr>';
+            }
+            tableStr += '</tbody></table>';
+            if (showMore) {
+                tableStr += '<div id="cash-more" align="center"><p style="color: #F00">显示更多......</p></div>';
+            }
+            $('div.cashTable').html(tableStr);
+        };
+
+        var putOcoinTable = function () {
+            var tableStr = '<table class="table table-hover" style="margin-bottom: 0">';
+            tableStr += '<thead><tr><th>类型</th><th>金额</th><th>时间</th><th>状态</th></tr></thead><tbody>';
+            var length = ocoinRecord.length > accountDisplayLength ? accountDisplayLength : ocoinRecord.length;
+            var showMore = ocoinRecord.length > accountDisplayLength ? true : false;
+
+            for (var i = 0; i < length; i++) {
+                tableStr += '<tr>';
+                tableStr += '<th>' + ocoinRecord[i].transaction_Property + '</th>';
+                tableStr += '<th>' + ocoinRecord[i].transaction_Num + '</th>';
+                tableStr += '<th>' + ocoinRecord[i].transaction_Time + '</th>';
+                tableStr += '<th>' + ocoinRecord[i].transaction_Status + '</th>';
+                tableStr += '</tr>';
+            }
+            tableStr += '</tbody></table>';
+            if (showMore) {
+                tableStr += '<div id="ocoin-more" align="center"><p style="color: #F00">显示更多......</p></div>';
+            }
+            $('div.ocoinTable').html(tableStr);
+        };
+
+        var putBankTable = function () {
+            var tableStr = '<table class="table table-hover" style="margin-bottom: 0">';
+            tableStr += '<thead><tr><th width="60px">开户人</th><th>卡号</th><th>银行</th></tr></thead><tbody>';
+            var length = bankRecord.length > accountDisplayLength ? accountDisplayLength : bankRecord.length;
+            var showMore = bankRecord.length > accountDisplayLength ? true : false;
+
+            for (var i = 0; i < length; i++) {
+                tableStr += '<tr>';
+                tableStr += '<th>' + bankRecord[i].accountname + '</th>';
+                tableStr += '<th>' + bankRecord[i].accountno + '</th>';
+                tableStr += '<th>' + bankRecord[i].bank + '</th>';
+                tableStr += '</tr>';
+            }
+            tableStr += '</tbody></table>';
+            if (showMore) {
+                tableStr += '<div id="bank-more" align="center"><p style="color: #F00">显示更多......</p></div>';
+            }
+            $('div.bankTable').html(tableStr);
+        };
+
+    </script>
+</head>
+
+<body>
+<div class="tcontent" id="page1">
+    <div class="block radius1">
+        <div class="title4 underline1 color1">账户余额
+            <button type="button" class="cashBtn barbtn pull-right btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+        </div>
+        <p class="accountMoney"></p>
+
+        <div class="cashTable"></div>
+    </div>
+    <div class="block radius1">
+        <div class="title4 underline1 color2">我的O币
+            <button type="button" class="ocoinBtn barbtn pull-right btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+        </div>
+        <p class="ocoin"></p>
+
+        <div class="ocoinTable"></div>
+    </div>
+    <div class="block radius1">
+        <div class="title4 underline1 color3">绑定银行卡
+            <button type="button" class="ocoinBtn barbtn pull-right btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-arrow-right"></span>
+            </button>
+            <button type="button" class="bankBtn barbtn pull-right btn btn-default btn-sm" style="margin-right: 10px">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
+        <p class="bankCard"></p>
+
+        <div class="bankTable"></div>
+    </div>
+</div>
+</body>
+</html>

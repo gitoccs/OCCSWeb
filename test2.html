@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html> 
+<html>
+<head>
+	<title>Page Test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="js/jquery.js"></script>
+    <script>
+	
+	var geturl = "http://218.61.196.194:9009/MobileAPI.asmx";
+	//var geturl = "page1.xml";
+	//var geturl = "test.php";
+	
+	//var geturl1 = "http://218.61.196.194:9009/MobileAPI.ASMX/AddDemand";
+	var srv_url = "MobileAPI.asmx";
+
+	$(function(){
+		
+	    $("#aaa").bind("click", function () {
+	      
+
+	        $.ajax({
+	            type: "POST",
+	            url: srv_url + '/GetUserInfo',
+	            data: { keyword: 'dhccpass', username: '我叫考必过' },
+	            //contentType: "application/json;",
+	            //dataType: "json",
+	            dataType: "xml",
+	            error: function (a, b, c) { alert("ddd") },
+	            success: function (result) {
+
+	                $(result).find('details').each(function () {
+
+	                    var idno = $(this).children('idno').text();//获取子节点的文本
+	                    $("#cardno").html(idno);
+	                });
+
+	            }
+	        });
+
+
+
+	    });
+
+		
+
+	});
+	
+    </script>
+</head>
+
+<body>
+    dddddddd fdsa fdsa ff dsaf dsa fdsds
+    您的身份证号：<div id="cardno"></div>
+
+    <input type="button" id="aaa" value="点我" />
+</body>
+</html>

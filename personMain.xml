@@ -1,0 +1,27 @@
+<results>
+    <listView>
+        <item>
+            <src>img/personMainAdv/icon3.png</src>
+            <badge>12</badge>
+            <title>适合我的工单</title>
+            <text>[组件配置拓扑] 客户管理 新增客户</text>
+            <lasttime>15:30</lasttime>
+        </item>
+      <!--
+        <item>
+            <src>img/personMainAdv/icon2.jpg</src>
+            <badge>3</badge>
+            <title>活动信息</title>
+            <text>OCCS周年庆有优惠券领取</text>
+            <lasttime>昨天</lasttime>
+        </item>
+        -->
+        <item>
+            <src>img/personMainAdv/icon1.jpg</src>
+            <badge>23</badge>
+            <title>系统通知</title>
+            <text>系统通知您大连银行项目已经完成</text>
+            <lasttime>9月20日</lasttime>
+        </item>
+    </listView>
+</results>
